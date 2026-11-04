@@ -55,7 +55,6 @@ function pageHTML(it, i) {
   return `<figure class="pg ${it.id === sel ? 'sel' : ''}" data-id="${it.id}">
     <div class="sheetp" style="aspect-ratio:${L.pw}/${L.ph}">
       <img src="${it.url}" alt="Page ${i + 1}" style="left:${p(L.x / L.pw)};top:${p(L.y / L.ph)};width:${p(L.w / L.pw)};height:${p(L.h / L.ph)}">
-      ${S.nums ? `<span class="num">${i + 1}</span>` : ''}
       <button class="px" data-x="${it.id}" aria-label="Remove page ${i + 1}" title="Remove this page">×</button>
     </div><figcaption>Page ${i + 1}</figcaption></figure>`;
 }
@@ -68,20 +67,8 @@ function render() {
   $('#pages').innerHTML = items.length ? items.map(pageHTML).join('')
     : `<div class="empty"><h3>Your pages will appear here</h3>Add a few photos and you’ll see each page exactly as it will print.</div>`;
   $('#count').textContent = items.length + (items.length === 1 ? ' page' : ' pages');
-  $('#dl').disabled = $('#share').disabled = !items.length;
-  syncTools();
+  $('#share').disabled = !items.length;
 }
-
-const cur = () => items.find(i => i.id === sel);
-
-function syncTools() {
-  const it = cur();
-  ['rl', 'rr', 'bw', 'dup', 'ml', 'mr'].forEach(id => $('#' + id).disabled = !it);
-  $('#rall').disabled = !items.length;
-  $('#bw').classList.toggle('on', !!(it && it.bw));
-}
-
-function refresh(it) { process(it); render(); }
 
 /* Loading photos */
 function load(file) {
@@ -107,12 +94,10 @@ async function add(files) {
   toast(list.length + (list.length > 1 ? ' photos added' : ' photo added'));
 }
 
-const drop = $('#drop'), file = $('#file'), cam = $('#cam');
+const drop = $('#drop'), file = $('#file');
 drop.onclick = () => file.click();
 drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } };
-$('#camBtn').onclick = () => cam.click();
 file.onchange = () => { add(file.files); file.value = ''; };
-cam.onchange = () => { add(cam.files); cam.value = ''; };
 ['dragenter', 'dragover'].forEach(n => drop.addEventListener(n, e => { e.preventDefault(); if (dragFrom === null) drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(n => drop.addEventListener(n, e => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => { if (e.dataTransfer.files.length) add(e.dataTransfer.files); });
@@ -151,38 +136,8 @@ function removeItem(id) {
   if (!items.find(i => i.id === sel)) sel = items.length ? items[0].id : null;
   render();
 }
-function move(d) {
-  const i = items.findIndex(x => x.id === sel), j = i + d;
-  if (i < 0 || j < 0 || j >= items.length) return;
-  [items[i], items[j]] = [items[j], items[i]];
-  render();
-}
 
-/* Page tools */
-$('#rl').onclick = () => { const i = cur(); if (i) { i.rot = (i.rot + 270) % 360; refresh(i); } };
-$('#rr').onclick = () => { const i = cur(); if (i) { i.rot = (i.rot + 90) % 360; refresh(i); } };
-$('#bw').onclick = () => { const i = cur(); if (i) { i.bw = !i.bw; refresh(i); } };
-$('#ml').onclick = () => move(-1);
-$('#mr').onclick = () => move(1);
-$('#dup').onclick = () => {
-  const i = cur(); if (!i) return;
-  const c = { ...i, id: ++uid };
-  items.splice(items.indexOf(i) + 1, 0, c);
-  sel = c.id; render(); toast('Page duplicated');
-};
-$('#rall').onclick = () => { items.forEach(i => { i.rot = (i.rot + 90) % 360; process(i); }); render(); };
 $('#clear').onclick = () => { if (items.length && confirm('Remove all photos?')) { items = []; sel = null; render(); } };
-
-/* Page setup */
-$('#size').onchange = e => { S.size = e.target.value; render(); };
-$('#margin').oninput = e => { S.margin = +e.target.value; render(); };
-$('#nums').onchange = e => { S.nums = e.target.checked; render(); };
-$('#orient').onclick = e => {
-  const b = e.target.closest('button'); if (!b) return;
-  S.orient = b.dataset.v;
-  document.querySelectorAll('#orient button').forEach(x => x.classList.toggle('on', x === b));
-  render();
-};
 
 /* Build the PDF */
 function build() {
@@ -193,11 +148,6 @@ function build() {
     if (i === 0) doc = new jsPDF({ unit: 'mm', format: [L.pw, L.ph], orientation: o, compress: true });
     else doc.addPage([L.pw, L.ph], o);
     doc.addImage(it.url, 'JPEG', L.x, L.y, L.w, L.h, undefined, 'FAST');
-    if (S.nums) {
-      doc.setFontSize(9);
-      doc.setTextColor(90);
-      doc.text(String(i + 1), L.pw / 2, L.ph - Math.max(3, S.margin / 3), { align: 'center' });
-    }
   });
   const name = ($('#fname').value.trim() || 'my-notes').replace(/[\\/:*?"<>|]+/g, '-');
   return { doc, name };
@@ -212,12 +162,6 @@ function run(btn, label, fn) {
     btn.textContent = old; btn.disabled = !items.length;
   }, 60);
 }
-
-$('#dl').onclick = () => run($('#dl'), 'Building PDF…', () => {
-  const { doc, name } = build();
-  doc.save(name + '.pdf');
-  toast('Downloaded ' + name + '.pdf');
-});
 
 $('#share').onclick = () => run($('#share'), 'Preparing…', () => {
   const { doc, name } = build();
