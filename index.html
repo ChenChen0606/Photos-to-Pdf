@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leaf — Photos to PDF</title>
+<title>Pdfoto — Photo to PDF Converter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,8 +14,8 @@
 <header class="hero">
   <div class="wrap">
     <nav>
-      <div class="logo"><span class="mark"><i></i><i></i></span>Leaf</div>
-      <span class="tag">Photos to PDF</span>
+      <div class="logo"><span class="mark"><i></i><i></i></span>Pdfoto</div>
+      <span class="tag">Photo to PDF Converter</span>
     </nav>
     <div class="hero-grid">
       <div class="hero-text">
@@ -23,16 +23,11 @@
         <p class="lead">Upload your pictures, put them in the right order, preview every page, and download one PDF you can submit.</p>
         <a class="btn solid" href="#app">Start converting</a>
       </div>
-      <div class="art" aria-hidden="true">
-        <i class="a6"></i><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i><i class="a5"></i>
-        <div class="sheets"><b class="sh s1"></b><b class="sh s2"></b><b class="sh s3"></b></div>
-        <div class="pdfb">PDF</div>
       </div>
-    </div>
     <ol class="steps">
       <li><b>Upload photos</b><span>Choose images or take a photo. JPG, PNG, WebP, GIF, BMP and AVIF all work.</span></li>
-      <li><b>Arrange pages</b><span>Drag to reorder, rotate, or remove pages until the order is right.</span></li>
-      <li><b>Download the PDF</b><span>Pick a paper size, check the preview, then download or share the file.</span></li>
+      <li><b>Arrange pages</b><span>Drag the photos to reorder them, or remove any page, until the order is right.</span></li>
+      <li><b>Download the PDF</b><span>Check every page in the preview, then download or share the PDF.</span></li>
     </ol>
   </div>
 </header>
@@ -42,7 +37,7 @@
     <div class="app-head">
       <div>
         <h2>Convert your photos</h2>
-        <p>Add photos, then tap a page to rotate, move or remove it before you download.</p>
+        <p>Add your photos, drag them into order, then download your PDF.</p>
       </div>
       <button class="btn line" id="clear">Clear all</button>
     </div>
@@ -55,43 +50,25 @@
           <small>or tap to choose from your device</small>
         </div>
         <input id="file" type="file" accept="image/*" multiple hidden>
-        <input id="cam" type="file" accept="image/*" capture="environment" hidden>
-        <button class="btn line full" id="camBtn">Take a photo</button>
 
         <ul class="thumbs" id="thumbs"></ul>
 
         <h3>Page setup</h3>
         <div class="row"><label for="size">Page size</label>
-          <select id="size"><option value="a4">A4 (210 × 297 mm)</option><option value="letter">Letter (8.5 × 11 in)</option><option value="legal">Legal (8.5 × 14 in)</option><option value="long">Long bond (8.5 × 13 in)</option><option value="a3">A3 (297 × 420 mm)</option><option value="a5">A5 (148 × 210 mm)</option><option value="b5">B5 (176 × 250 mm)</option><option value="exec">Executive (7.25 × 10.5 in)</option><option value="tabloid">Tabloid (11 × 17 in)</option><option value="fit">Match photo</option></select></div>
+          <select id="size" disabled><option value="a4">A4 (210 × 297 mm)</option><option value="letter">Letter (8.5 × 11 in)</option><option value="legal">Legal (8.5 × 14 in)</option><option value="long">Long bond (8.5 × 13 in)</option><option value="a3">A3 (297 × 420 mm)</option><option value="a5">A5 (148 × 210 mm)</option><option value="b5">B5 (176 × 250 mm)</option><option value="exec">Executive (7.25 × 10.5 in)</option><option value="tabloid">Tabloid (11 × 17 in)</option><option value="fit">Match photo</option></select></div>
         <div class="row"><label>Orientation</label>
-          <div class="seg" id="orient"><button data-v="auto" class="on">Auto</button><button data-v="port">Portrait</button><button data-v="land">Landscape</button></div></div>
-        <div class="row"><label for="margin">Margin</label><input type="range" id="margin" min="0" max="30" value="10"></div>
-        <div class="row"><label for="nums">Page numbers</label><input type="checkbox" id="nums" class="switch"></div>
+          <div class="seg" id="orient"><button class="on" disabled>Auto</button><button disabled>Portrait</button><button disabled>Landscape</button></div></div>
+        <div class="row"><label for="margin">Margin</label><input type="range" id="margin" min="0" max="30" value="10" disabled></div>
       </aside>
 
       <section>
-        <div class="tools" id="tools">
-          <div class="grp">
-            <button class="ib" id="rl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Rotate left</button>
-            <button class="ib" id="rr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Rotate right</button>
-            <button class="ib" id="bw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/></svg>Black &amp; white</button>
-          </div>
-          <div class="grp">
-            <button class="ib" id="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Move back</button>
-            <button class="ib" id="mr">Move forward<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-            <button class="ib" id="dup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>Duplicate</button>
-          </div>
-          <div class="grp">
-            <button class="ib" id="rall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Rotate all pages</button>
-          </div>
-        </div>
         <div class="pages" id="pages"></div>
         <div class="bar">
           <div class="info"><b id="count">0 pages</b></div>
           <div class="actions">
             <input type="text" id="fname" value="my-notes" aria-label="File name">
             <button class="btn ghost" id="share" disabled>Share</button>
-            <button class="btn gold" id="dl" disabled>Download PDF</button>
+            <button class="btn go" id="dl" disabled>Download PDF</button>
           </div>
         </div>
       </section>
