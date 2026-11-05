@@ -482,16 +482,6 @@ input[type=range] {
   color: #fff;
 }
 
-.panel select:disabled,
-.panel input:disabled,
-.panel .seg button:disabled {
-  cursor: not-allowed;
-}
-
-.panel .row {
-  opacity: .6;
-}
-
 /* ===== Preview stage ===== */
 
 .pages {
