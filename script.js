@@ -139,6 +139,13 @@ function removeItem(id) {
 
 $('#clear').onclick = () => { if (items.length && confirm('Remove all photos?')) { items = []; sel = null; render(); } };
 
+/* Page setup: clickable for now, but these controls don't change the PDF yet */
+$('#orient').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  document.querySelectorAll('#orient button').forEach(x => x.classList.toggle('on', x === b));
+});
+
 /* Build the PDF */
 function build() {
   const { jsPDF } = window.jspdf;
