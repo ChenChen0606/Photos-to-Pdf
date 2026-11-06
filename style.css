@@ -8,13 +8,17 @@
   --blush: #f6d3d1;
   --line: #ecd9d6;
   --muted: #6a5659;
+  --gold: #f2b134;
   --shadow: 0 16px 34px -18px rgba(27, 20, 22, .55);
+  --soft: 0 10px 30px -14px rgba(27, 20, 22, .28);
 }
-
-/* ===== Base ===== */
 
 * {
   box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 html {
@@ -28,9 +32,14 @@ body {
   font: 400 16px/1.55 'DM Sans', system-ui, sans-serif;
 }
 
+body.lock {
+  overflow: hidden;
+}
+
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: Fraunces, Georgia, serif;
   margin: 0;
   line-height: 1.1;
@@ -38,7 +47,8 @@ h3 {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -54,11 +64,14 @@ select {
   padding: 0 20px;
 }
 
-/* ===== Hero ===== */
 
+/* ==========================================================================
+   2. HERO
+   ========================================================================== */
 .hero {
   padding: 26px 0 70px;
   overflow: hidden;
+  overflow: clip;
 }
 
 nav {
@@ -111,12 +124,9 @@ nav {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1.05fr .95fr;
   gap: 40px;
-}
-
-.hero h1 {
-  max-width: 12em;
+  align-items: center;
 }
 
 .hero h1 {
@@ -132,8 +142,145 @@ nav {
   color: var(--muted);
 }
 
-/* ===== Steps ===== */
+/* ---------- circle composition ---------- */
+.art {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
 
+.art i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+
+.a6 {
+  inset: 0;
+  border: 2px dotted var(--mar);
+  opacity: .45;
+}
+
+.a1 {
+  inset: 9% 7% 7% 11%;
+  background: var(--mar);
+}
+
+.a2 {
+  width: 27%;
+  aspect-ratio: 1;
+  left: 0;
+  bottom: 5%;
+  background: var(--ink);
+}
+
+.a3 {
+  width: 30%;
+  aspect-ratio: 1;
+  right: 0;
+  top: 0;
+  border: 2px solid var(--ink);
+}
+
+.a4 {
+  width: 15%;
+  aspect-ratio: 1;
+  right: 7%;
+  bottom: 0;
+  background: var(--gold);
+}
+
+.a5 {
+  width: 8%;
+  aspect-ratio: 1;
+  left: 12%;
+  top: 6%;
+  background: var(--mar-d);
+}
+
+/* ---------- floating sheets ---------- */
+.sheets {
+  position: absolute;
+  inset: 0;
+}
+
+.sh {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36%;
+  aspect-ratio: 3/4;
+  margin: -24% 0 0 -18%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  background-image: repeating-linear-gradient(transparent 0 15px, #e7d8d6 15px 16px);
+  background-position: 0 30px;
+}
+
+.s1 {
+  transform: rotate(-12deg) translateX(-14%);
+}
+
+.s2 {
+  transform: rotate(3deg);
+}
+
+.s3 {
+  transform: rotate(15deg) translateX(14%);
+  background-color: var(--ivory);
+}
+
+.pdfb {
+  position: absolute;
+  right: 3%;
+  bottom: 20%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font: 700 clamp(16px, 3vw, 26px) Fraunces, serif;
+  border: 4px solid var(--ivory);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .s1 {
+    animation: fl1 7s ease-in-out infinite;
+  }
+
+  .s2 {
+    animation: fl2 8s ease-in-out infinite;
+  }
+
+  .s3 {
+    animation: fl3 9s ease-in-out infinite;
+  }
+}
+
+@keyframes fl1 {
+  50% {
+    transform: rotate(-14deg) translate(-14%, -3%);
+  }
+}
+
+@keyframes fl2 {
+  50% {
+    transform: rotate(1deg) translateY(-3%);
+  }
+}
+
+@keyframes fl3 {
+  50% {
+    transform: rotate(17deg) translate(14%, 2%);
+  }
+}
+
+/* ---------- how-it-works steps ---------- */
 .steps {
   list-style: none;
   margin: 56px 0 0;
@@ -200,8 +347,10 @@ nav {
   font-size: 15px;
 }
 
-/* ===== Buttons ===== */
 
+/* ==========================================================================
+   3. BUTTONS
+   ========================================================================== */
 .btn {
   border: 0;
   cursor: pointer;
@@ -211,6 +360,16 @@ nav {
   display: inline-block;
   text-decoration: none;
   text-align: center;
+  transition: background .15s, color .15s, transform .1s;
+}
+
+.btn:active:not([disabled]) {
+  transform: scale(.97);
+}
+
+.btn.sm {
+  padding: 8px 16px;
+  font-size: 14px;
 }
 
 .btn.solid {
@@ -225,24 +384,14 @@ nav {
 }
 
 .btn.line {
-  background: transparent;
+  background: #fff;
   border: 1.5px solid var(--ink);
   color: var(--ink);
 }
 
-.btn.line:hover {
+.btn.line:hover:not([disabled]) {
   background: var(--ink);
   color: #fff;
-}
-
-.btn.ghost {
-  background: transparent;
-  border: 1.5px solid var(--ink);
-  color: var(--ink);
-}
-
-.btn.ghost:hover {
-  background: var(--blush);
 }
 
 .btn.go {
@@ -250,8 +399,17 @@ nav {
   color: #fff;
 }
 
-.btn.go:hover {
+.btn.go:hover:not([disabled]) {
   background: #d8212e;
+}
+
+.btn.gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn.gold:hover:not([disabled]) {
+  background: #f7c35f;
 }
 
 .btn.full {
@@ -264,14 +422,29 @@ nav {
   cursor: not-allowed;
 }
 
-/* ===== Converter app ===== */
 
+/* ==========================================================================
+   4. APP SHELL
+   ========================================================================== */
 .app-sec {
   background: var(--paper);
   border-top: 2px solid var(--ink);
   padding: 64px 0 90px;
   position: relative;
   overflow: hidden;
+  overflow: clip;
+}
+
+.app-sec:before {
+  content: "";
+  position: absolute;
+  right: -140px;
+  top: -140px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  border: 2px solid var(--blush);
+  box-shadow: 0 0 0 40px var(--ivory);
 }
 
 .app-sec .wrap {
@@ -284,7 +457,7 @@ nav {
   align-items: end;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
 
 .app-head h2 {
@@ -298,28 +471,149 @@ nav {
   color: var(--muted);
 }
 
-.app {
-  display: grid;
-  grid-template-columns: 370px 1fr;
-  gap: 26px;
-  align-items: start;
+/* ---------- stepper ---------- */
+.stepper {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.panel {
+.stepper button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 20px 6px 6px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all .15s;
+}
+
+.stepper button span {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--ivory);
+  border: 1.5px solid var(--line);
+  font: 700 16px Fraunces, serif;
+  color: var(--ink);
+}
+
+.stepper button:hover {
+  border-color: var(--mar);
+}
+
+.stepper button.done span {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.stepper button.on {
+  border-color: var(--mar);
+  color: var(--ink);
+  box-shadow: 0 0 0 3px var(--blush);
+}
+
+.stepper button.on span {
+  background: var(--mar);
+  color: #fff;
+  border-color: var(--mar);
+}
+
+/* ---------- view transition ---------- */
+.view.in {
+  animation: rise .35s ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view.in {
+    animation: none;
+  }
+}
+
+
+/* ==========================================================================
+   5. PANELS & SHARED COMPONENTS
+   ========================================================================== */
+.panel,
+.card {
   background: var(--ivory);
   border: 1.5px solid var(--line);
   border-radius: 36px;
   padding: 24px;
 }
 
-.panel h3 {
-  font-size: 20px;
-  margin: 28px 0 8px;
+.panel h3,
+.card h3 {
+  font-size: 22px;
+  margin: 0 0 8px;
   color: var(--mar);
 }
 
+.panel h3.first {
+  margin-top: 0;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 4px 0 10px;
+}
+
+.hint.tip {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1.5px dashed var(--line);
+}
+
+.pill {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: #fff;
+  font: 700 14px 'DM Sans', sans-serif;
+  vertical-align: middle;
+}
+
+
+/* ==========================================================================
+   6. STEP 1 – UPLOAD
+   ========================================================================== */
+.up {
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+/* ---------- drop zone ---------- */
 .drop {
-  width: min(100%, 270px);
+  width: min(100%, 290px);
   aspect-ratio: 1;
   margin: 0 auto;
   border: 2.5px dashed var(--mar);
@@ -332,6 +626,11 @@ nav {
   padding: 30px;
   cursor: pointer;
   background: var(--paper);
+  transition: background .15s, transform .15s;
+}
+
+.drop:hover {
+  transform: scale(1.02);
 }
 
 .drop.over {
@@ -339,14 +638,14 @@ nav {
 }
 
 .drop svg {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   stroke: var(--mar);
   margin-bottom: 6px;
 }
 
 .drop strong {
-  font: 700 20px Fraunces, serif;
+  font: 700 21px Fraunces, serif;
   color: var(--ink);
   line-height: 1.15;
 }
@@ -357,13 +656,25 @@ nav {
   margin-top: 4px;
 }
 
+/* ---------- uploaded list / thumbnails ---------- */
+.list-panel {
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
 .thumbs {
   list-style: none;
-  margin: 20px 0 0;
+  margin: 14px 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 18px 14px;
+}
+
+.thumbs:empty {
+  display: none;
 }
 
 .thumbs li {
@@ -373,6 +684,11 @@ nav {
   background: var(--paper);
   border: 2px solid var(--line);
   cursor: grab;
+  transition: transform .15s;
+}
+
+.thumbs li:hover {
+  transform: translateY(-3px);
 }
 
 .thumbs li.sel {
@@ -403,7 +719,7 @@ nav {
   font-weight: 700;
   border-radius: 99px;
   padding: 0 9px;
-  border: 2px solid var(--ivory);
+  border: 2px solid #fff;
 }
 
 .thumbs .x {
@@ -413,7 +729,7 @@ nav {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid var(--ivory);
+  border: 2px solid #fff;
   background: var(--mar);
   color: #fff;
   cursor: pointer;
@@ -421,8 +737,38 @@ nav {
   padding: 0;
 }
 
-/* ===== Page setup (settings panel) ===== */
+.empty-s {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+  border: 2px dashed var(--line);
+  border-radius: 28px;
+  margin-top: 10px;
+}
 
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+
+/* ==========================================================================
+   7. STEP 2 – LAYOUT / PREVIEW
+   ========================================================================== */
+.app {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+/* ---------- settings rows & controls ---------- */
 .row {
   display: flex;
   justify-content: space-between;
@@ -437,7 +783,8 @@ nav {
 }
 
 select,
-input[type=text] {
+input[type=text],
+textarea {
   background: var(--paper);
   border: 1.5px solid var(--line);
   border-radius: 999px;
@@ -446,7 +793,7 @@ input[type=text] {
 }
 
 select {
-  max-width: 200px;
+  max-width: 190px;
 }
 
 input[type=range] {
@@ -468,6 +815,20 @@ input[type=range] {
   background: var(--paper);
 }
 
+.row.stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.row.stack .seg {
+  width: 100%;
+}
+
+.row.stack .seg button {
+  flex: 1;
+}
+
 .seg button {
   border: 0;
   background: none;
@@ -482,41 +843,199 @@ input[type=range] {
   color: #fff;
 }
 
-/* ===== Preview stage ===== */
+/* ---------- toolbar ---------- */
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
 
+.grp {
+  display: flex;
+  background: #fff;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ib {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  border-right: 1.5px solid var(--line);
+  background: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ib:last-child {
+  border-right: 0;
+}
+
+.ib svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.ib:hover:not([disabled]) {
+  background: var(--blush);
+}
+
+.ib.on {
+  background: var(--mar);
+  color: #fff;
+}
+
+.ib.prime:not([disabled]) {
+  background: var(--mar);
+  color: #fff;
+}
+
+.ib.prime:hover:not([disabled]) {
+  background: #d8212e;
+}
+
+.ib[disabled] {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* ---------- preview stage (white) ---------- */
 .pages {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 300px));
+  justify-content: center;
+  gap: 30px 28px;
   padding: 30px;
   border-radius: 40px;
   min-height: 440px;
   align-content: start;
-  background: #fff;
   border: 1.5px solid var(--line);
+  background:
+    radial-gradient(circle at 100% 0,
+      transparent 0 130px,
+      rgba(184, 16, 31, .10) 130px 132px,
+      transparent 132px 210px,
+      rgba(184, 16, 31, .10) 210px 212px,
+      transparent 212px 290px,
+      rgba(184, 16, 31, .10) 290px 292px,
+      transparent 292px),
+    radial-gradient(circle at 0 100%,
+      transparent 0 90px,
+      rgba(184, 16, 31, .10) 90px 92px,
+      transparent 92px 170px,
+      rgba(184, 16, 31, .10) 170px 172px,
+      transparent 172px),
+    #fff;
+}
+
+.pages.multi {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
 }
 
 .pg {
   margin: 0;
-  cursor: pointer;
 }
 
 .sheetp {
   position: relative;
   background: #fff;
-  box-shadow: 0 10px 24px -10px rgba(27, 20, 22, .45);
   border: 1px solid var(--line);
+  box-shadow: 0 12px 26px -14px rgba(27, 20, 22, .45);
   border-radius: 4px;
-  outline: 4px solid transparent;
+  transition: transform .2s, box-shadow .2s;
 }
 
-.pg.sel .sheetp {
+.pg:hover .sheetp {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 30px -14px rgba(27, 20, 22, .5);
+}
+
+/* ---------- photo cells on a page ---------- */
+.cell {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color .15s;
+}
+
+.cell:hover {
+  outline-color: var(--blush);
+}
+
+.cell.sel {
   outline-color: var(--mar);
 }
 
-.pg img {
-  position: absolute;
+.cell.over {
+  outline-color: var(--gold);
+}
+
+.cell.drag {
+  opacity: .4;
+}
+
+.cell img {
+  width: 100%;
+  height: 100%;
   display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ctl {
+  position: absolute;
+  top: 22px;
+  right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.cell:hover .ctl,
+.cell.sel .ctl {
+  opacity: 1;
+}
+
+.cb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--ink);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+}
+
+.cb:hover {
+  background: var(--mar);
+}
+
+.pg .num {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.5%;
+  text-align: center;
+  font-size: 10px;
+  color: #555;
 }
 
 .pg figcaption {
@@ -524,42 +1043,15 @@ input[type=range] {
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
-  margin-top: 10px;
-}
-
-.px {
-  position: absolute;
-  right: -12px;
-  top: -12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  background: var(--ink);
-  color: #fff;
-  font-size: 19px;
-  line-height: 1;
-  cursor: pointer;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  padding: 0;
-}
-
-.px:hover {
-  background: var(--mar);
+  margin-top: 12px;
 }
 
 .empty {
   grid-column: 1/-1;
-  min-height: 380px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   color: var(--muted);
-  padding: 10px;
+  align-self: center;
+  padding: 70px 10px;
 }
 
 .empty h3 {
@@ -568,11 +1060,11 @@ input[type=range] {
   margin-bottom: 6px;
 }
 
-/* ===== Bottom bar ===== */
-
+/* ---------- bottom bar (white) ---------- */
 .bar {
   position: sticky;
   bottom: 12px;
+  z-index: 5;
   margin-top: 18px;
   display: flex;
   justify-content: space-between;
@@ -582,22 +1074,428 @@ input[type=range] {
   background: #fff;
   color: var(--ink);
   border: 1.5px solid var(--line);
-  padding: 10px 12px 10px 24px;
+  padding: 10px 12px;
   border-radius: 999px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 14px 34px -14px rgba(27, 20, 22, .35);
+}
+
+.bar .info {
+  padding: 0 8px;
 }
 
 .actions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .actions input {
+  width: 170px;
+}
+
+
+/* ==========================================================================
+   8. STEP 3 – EXPORT
+   ========================================================================== */
+.card {
+  background: #fff;
+}
+
+.sum {
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0 0 16px;
+}
+
+.chk {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
   background: var(--ivory);
-  border-color: var(--line);
-  color: var(--ink);
-  width: 160px;
+  cursor: pointer;
+}
+
+.chk .switch {
+  flex: none;
+  margin-top: 3px;
+}
+
+.chk b {
+  display: block;
+}
+
+.chk small {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.btnrow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 14px 0;
+}
+
+.btnrow.end {
+  margin-top: 18px;
+}
+
+/* ---------- progress ---------- */
+.prog {
+  margin: 4px 0 14px;
+}
+
+.track {
+  height: 12px;
+  border-radius: 99px;
+  background: var(--ivory);
+  border: 1.5px solid var(--line);
+  overflow: hidden;
+}
+
+.track span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--mar);
+  border-radius: 99px;
+  transition: width .25s;
+}
+
+.prog small {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ---------- extracted text blocks ---------- */
+.texts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+  align-items: start;
+}
+
+.tx {
+  border: 1.5px solid var(--line);
+  border-radius: 24px;
+  padding: 10px 12px;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.tx.pick {
+  border-color: var(--mar);
+  box-shadow: 0 0 0 3px var(--blush);
+}
+
+.tx summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 4px;
+}
+
+.tx summary::-webkit-details-marker {
+  display: none;
+}
+
+.tx summary img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--line);
+}
+
+.tx summary em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tx textarea {
+  width: 100%;
+  border-radius: 18px;
+  padding: 12px 14px;
+  resize: vertical;
+  line-height: 1.5;
+  margin-top: 8px;
+  background: var(--ivory);
+}
+
+.tx .btnrow {
+  margin: 8px 0 4px;
+}
+
+
+/* ==========================================================================
+   9. EDITOR MODAL
+   ========================================================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 20, 22, .55);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 14px;
+  animation: fade .2s;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.mbox {
+  background: #fff;
+  border-radius: 30px;
+  width: min(1060px, 100%);
+  max-height: calc(100vh - 28px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, .6);
+}
+
+.mhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 22px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.mhead h3 {
+  font-size: 24px;
+  color: var(--mar);
+}
+
+.mx {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mx:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.mbody {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  min-height: 0;
+  flex: 1;
+}
+
+/* ---------- editing stage ---------- */
+.stagewrap {
+  display: grid;
+  place-items: center;
+  background: #f1ece9;
+  height: min(64vh, 580px);
+  min-height: 300px;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  touch-action: none;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 8px 30px -10px rgba(0, 0, 0, .4);
+}
+
+.stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dim {
+  position: absolute;
+  box-shadow: 0 0 0 9999px rgba(27, 20, 22, .55);
+}
+
+/* ---------- crop box ---------- */
+.crop {
+  position: absolute;
+  border: 2px solid #fff;
+  outline: 2px solid var(--mar);
+  cursor: move;
+  touch-action: none;
+}
+
+.crop:before,
+.crop:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(#fff6 0 0) 33.3% 0/1px 100% no-repeat,
+    linear-gradient(#fff6 0 0) 66.6% 0/1px 100% no-repeat,
+    linear-gradient(#fff6 0 0) 0 33.3%/100% 1px no-repeat,
+    linear-gradient(#fff6 0 0) 0 66.6%/100% 1px no-repeat;
+}
+
+.crop i {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--mar);
+  touch-action: none;
+}
+
+.crop i[data-h=nw] {
+  left: 0;
+  top: 0;
+  cursor: nwse-resize;
+}
+
+.crop i[data-h=n] {
+  left: 50%;
+  top: 0;
+  cursor: ns-resize;
+}
+
+.crop i[data-h=ne] {
+  left: 100%;
+  top: 0;
+  cursor: nesw-resize;
+}
+
+.crop i[data-h=e] {
+  left: 100%;
+  top: 50%;
+  cursor: ew-resize;
+}
+
+.crop i[data-h=se] {
+  left: 100%;
+  top: 100%;
+  cursor: nwse-resize;
+}
+
+.crop i[data-h=s] {
+  left: 50%;
+  top: 100%;
+  cursor: ns-resize;
+}
+
+.crop i[data-h=sw] {
+  left: 0;
+  top: 100%;
+  cursor: nesw-resize;
+}
+
+.crop i[data-h=w] {
+  left: 0;
+  top: 50%;
+  cursor: ew-resize;
+}
+
+/* ---------- side panel ---------- */
+.side {
+  padding: 18px 22px;
+  overflow: auto;
+  max-height: min(64vh, 580px);
+}
+
+.sg {
+  padding: 12px 0;
+  border-bottom: 1.5px dashed var(--line);
+}
+
+.sg:last-child {
+  border-bottom: 0;
+}
+
+.sg h4 {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.sg .btnrow {
+  margin: 6px 0 0;
+}
+
+.wrapseg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 22px;
+  gap: 2px;
+}
+
+.sl {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.sl input {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.mfoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-top: 1.5px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.mfoot .sp {
+  flex: 1;
+}
+
+
+/* ==========================================================================
+   10. FOOTER & TOAST
+   ========================================================================== */
+.foot {
+  padding: 26px 0 40px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
 }
 
 .toast {
@@ -610,7 +1508,7 @@ input[type=range] {
   padding: 10px 20px;
   border-radius: 999px;
   display: none;
-  z-index: 9;
+  z-index: 99;
   max-width: 90vw;
   text-align: center;
 }
@@ -619,15 +1517,52 @@ input[type=range] {
   display: block;
 }
 
-/* ===== Responsive ===== */
 
-@media (max-width: 940px) {
-  .hero-grid,
+/* ==========================================================================
+   11. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1000px) {
+
+  .up,
   .app {
     grid-template-columns: 1fr;
   }
+
+  .drop {
+    width: min(100%, 260px);
+  }
+}
+
+@media (max-width: 940px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .art {
+    max-width: 380px;
+    order: -1;
+  }
+
   nav {
     margin-bottom: 24px;
+  }
+
+  .ib {
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+  .mbody {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .stagewrap {
+    height: 46vh;
+  }
+
+  .side {
+    max-height: none;
   }
 }
 
@@ -636,18 +1571,429 @@ input[type=range] {
     grid-template-columns: 1fr;
     gap: 20px;
   }
+
   .steps li {
     padding: 0 0 0 76px;
     min-height: 58px;
   }
+
   .steps li:after {
     display: none;
   }
+
   .pages {
     padding: 22px;
   }
+
   .bar {
     border-radius: 28px;
-    padding: 12px 16px;
+    padding: 12px 14px;
   }
+
+  .actions input {
+    width: 130px;
+  }
+
+  .stepper button {
+    padding-right: 14px;
+    font-size: 14px;
+  }
+
+  .panel,
+  .card {
+    padding: 18px;
+    border-radius: 28px;
+  }
+}
+
+
+/* ==========================================================================
+   12. ADDITIONS: MOVING & RESIZING PHOTOS ON THE PAGE
+   ========================================================================== */
+.cell.sel {
+  touch-action: none;
+  z-index: 3;
+  cursor: move;
+}
+
+.cell:active {
+  cursor: grabbing;
+}
+
+.rz {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--mar);
+  display: none;
+  z-index: 4;
+  touch-action: none;
+}
+
+.cell.sel .rz {
+  display: block;
+}
+
+.sheetp[data-free="0"] .rz {
+  display: none !important;
+}
+
+.rz[data-rz=nw] {
+  left: -8px;
+  top: -8px;
+  cursor: nwse-resize;
+}
+
+.rz[data-rz=ne] {
+  right: -8px;
+  top: -8px;
+  cursor: nesw-resize;
+}
+
+.rz[data-rz=sw] {
+  left: -8px;
+  bottom: -8px;
+  cursor: nesw-resize;
+}
+
+.rz[data-rz=se] {
+  right: -8px;
+  bottom: -8px;
+  cursor: nwse-resize;
+}
+
+.pages.multi .cb {
+  width: 24px;
+  height: 24px;
+  font-size: 15px;
+}
+
+.pages.multi .cb svg {
+  width: 12px;
+  height: 12px;
+}
+
+.pages {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 340px));
+}
+
+.pages.multi {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 440px));
+}
+
+
+/* ==========================================================================
+   13. ADDITIONS: STEP 1 HINT
+   ========================================================================== */
+.hint.center {
+  text-align: center;
+  margin-top: 14px;
+}
+
+
+/* ==========================================================================
+   14. ADDITIONS: STEP 3 EXTRACT CARDS
+   ========================================================================== */
+.exp {
+  margin-bottom: 6px;
+}
+
+.exp-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.exp-head .hint {
+  max-width: 46em;
+}
+
+.row.lang {
+  margin: 0;
+  gap: 10px;
+}
+
+.txh {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.txh img {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 2px solid var(--line);
+  flex: none;
+}
+
+.txh b {
+  flex: 1;
+}
+
+/* ---------- badges ---------- */
+.bd {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--ivory);
+  color: var(--muted);
+  border: 1.5px solid var(--line);
+  white-space: nowrap;
+}
+
+.bd.ok {
+  background: #e9f6ec;
+  color: #1f6b34;
+  border-color: #bfe3c8;
+}
+
+.bd.none {
+  background: #fdeceb;
+  color: var(--mar);
+  border-color: var(--blush);
+}
+
+.bd.busy {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+}
+
+.tx textarea {
+  margin-top: 10px;
+}
+
+.tx .hint {
+  margin: 10px 2px 0;
+}
+
+
+/* ==========================================================================
+   15. ADDITIONS: DOWNLOAD DROPDOWN
+   ========================================================================== */
+.dd {
+  position: relative;
+}
+
+.dd .btn svg {
+  vertical-align: -3px;
+  margin-left: 4px;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: 310px;
+  max-width: calc(100vw - 40px);
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 20px 44px -16px rgba(27, 20, 22, .45);
+  padding: 8px;
+  z-index: 20;
+  animation: rise .18s ease both;
+}
+
+.menu .mh {
+  font: 700 11px 'DM Sans', sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 12px 4px;
+}
+
+.menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  border-radius: 14px;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+.menu button b {
+  display: block;
+  font-size: 15px;
+}
+
+.menu button small {
+  display: block;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.menu button:hover:not([disabled]),
+.menu button:focus-visible {
+  background: var(--blush);
+}
+
+.menu button[disabled] {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================================
+   16. ADDITIONS: MIDDLE (STRETCH) HANDLES
+   ========================================================================== */
+.rz.rzs {
+  background: var(--mar);
+  border-color: #fff;
+  border-radius: 99px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+}
+
+.rz[data-rz=n],
+.rz[data-rz=s] {
+  width: 30px;
+  height: 12px;
+  left: 50%;
+  margin-left: -15px;
+}
+
+.rz[data-rz=n] {
+  top: -6px;
+  cursor: ns-resize;
+}
+
+.rz[data-rz=s] {
+  bottom: -6px;
+  top: auto;
+  cursor: ns-resize;
+}
+
+.rz[data-rz=e],
+.rz[data-rz=w] {
+  width: 12px;
+  height: 30px;
+  top: 50%;
+  margin-top: -15px;
+}
+
+.rz[data-rz=e] {
+  right: -6px;
+  left: auto;
+  cursor: ew-resize;
+}
+
+.rz[data-rz=w] {
+  left: -6px;
+  cursor: ew-resize;
+}
+
+.ctl {
+  z-index: 6;
+}
+
+
+/* ==========================================================================
+   17. ADDITIONS: ADD PAGE TILE
+   ========================================================================== */
+.addpg {
+  display: block;
+}
+
+.sheetp.plus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  cursor: pointer;
+  border: 2.5px dashed var(--mar);
+  background: #fff;
+  color: var(--mar);
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 0;
+  font: inherit;
+}
+
+.sheetp.plus .pl {
+  font: 700 64px/1 Fraunces, serif;
+  transition: transform .2s;
+}
+
+.sheetp.plus .pt {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.sheetp.plus:hover {
+  background: var(--blush);
+  transform: none;
+  box-shadow: none;
+}
+
+.sheetp.plus:hover .pl {
+  transform: scale(1.15) rotate(90deg);
+}
+
+.pg:hover .sheetp.plus {
+  transform: none;
+  box-shadow: none;
+}
+
+.bd.warn {
+  background: #fff6e0;
+  color: #8a5a00;
+  border-color: #f2d58f;
+}
+
+.tx .warnhint {
+  color: #8a5a00;
+  margin: 8px 2px 0;
+}
+
+
+/* ==========================================================================
+   18. ADDITIONS: DRAGGING A PHOTO TO ANOTHER PAGE
+   ========================================================================== */
+.cell.lift {
+  opacity: .35;
+}
+
+.ghost {
+  position: fixed;
+  z-index: 200;
+  pointer-events: none;
+  width: 110px;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  box-shadow: 0 18px 36px -10px rgba(27, 20, 22, .6);
+  border: 3px solid var(--mar);
+  border-radius: 6px;
+  background: #fff;
+  opacity: .95;
+}
+
+.ghost img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+}
+
+.sheetp.drop {
+  outline: 4px solid var(--mar);
+  outline-offset: 3px;
+  background: #fff8f7;
+  box-shadow: 0 0 0 8px var(--blush), 0 12px 26px -14px rgba(27, 20, 22, .45);
+}
+
+.sheetp.plus.drop {
+  background: var(--blush);
 }
