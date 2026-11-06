@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pdfoto — Photo to PDF Converter</title>
+<title>Pdfoto — Photos to PDF and text</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,19 +16,24 @@
   <div class="wrap">
     <nav>
       <div class="logo"><span class="mark"><i></i><i></i></span>Pdfoto</div>
-      <span class="tag">Photo to PDF Converter</span>
+      <span class="tag">Private · No sign-up</span>
     </nav>
     <div class="hero-grid">
       <div class="hero-text">
-        <h1>Convert photos of your notes into one PDF.</h1>
-        <p class="lead">Upload your pictures, put them in the right order, preview every page, and download one PDF you can submit.</p>
-        <a class="btn solid" href="#app">Start converting</a>
+        <h1>From photo to PDF in three easy steps.</h1>
+        <p class="lead">Pdfoto gathers your pictures into one tidy PDF. Arrange them on pages any way you like, and copy out the written text whenever you need it. Everything happens on your device, and nothing is uploaded.</p>
+        <a class="btn solid" href="#app">Get started</a>
       </div>
+      <div class="art" aria-hidden="true">
+        <i class="a6"></i><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i><i class="a5"></i>
+        <div class="sheets"><b class="sh s1"></b><b class="sh s2"></b><b class="sh s3"></b></div>
+        <div class="pdfb">PDF</div>
       </div>
+    </div>
     <ol class="steps">
-      <li><b>Upload photos</b><span>Choose images or take a photo. JPG, PNG, WebP, GIF, BMP and AVIF all work.</span></li>
-      <li><b>Arrange pages</b><span>Drag the photos to reorder them, or remove any page, until the order is right.</span></li>
-      <li><b>Download the PDF</b><span>Check every page in the preview, then download or share the PDF.</span></li>
+      <li><b>Add your photos</b><span>Drop in pictures of notes, handouts or documents from your device.</span></li>
+      <li><b>Arrange your pages</b><span>Crop, rotate and stretch each photo. Drag it anywhere on a page, or move it onto another page.</span></li>
+      <li><b>Save what you need</b><span>Download a PDF, or read the text from the photos you pick and save it as .txt or Word.</span></li>
     </ol>
   </div>
 </header>
@@ -37,44 +43,209 @@
     <div class="app-head">
       <div>
         <h2>Convert your photos</h2>
-        <p>Add your photos, drag them into order, then download your PDF.</p>
+        <p id="stepHint">Add the photos you want in your PDF.</p>
       </div>
       <button class="btn line" id="clear">Clear all</button>
     </div>
 
-    <div class="app">
-      <aside class="panel">
-        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add photos">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg>
-          <strong>Drop photos here</strong>
-          <small>or tap to choose from your device</small>
+    <ol class="stepper" id="stepper">
+      <li><button data-go="1" class="on"><span>1</span>Upload</button></li>
+      <li><button data-go="2"><span>2</span>Edit &amp; arrange</button></li>
+      <li><button data-go="3"><span>3</span>Extract &amp; download</button></li>
+    </ol>
+
+    <!-- ================= STEP 1 : UPLOAD ================= -->
+    <section class="view in" id="v1">
+      <div class="up">
+        <div class="panel up-panel">
+          <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add photos">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg>
+            <strong>Drop photos here</strong>
+            <small>or tap to choose from your device</small>
+          </div>
+          <input id="file" type="file" accept="image/*" multiple hidden>
+          <p class="hint center">JPG, PNG, WebP, GIF, BMP or AVIF</p>
         </div>
-        <input id="file" type="file" accept="image/*" multiple hidden>
 
-        <ul class="thumbs" id="thumbs"></ul>
-
-        <h3>Page setup</h3>
-        <div class="row"><label for="size">Page size</label>
-          <select id="size"><option value="a4">A4 (210 × 297 mm)</option><option value="letter">Letter (8.5 × 11 in)</option><option value="legal">Legal (8.5 × 14 in)</option><option value="long">Long bond (8.5 × 13 in)</option><option value="a3">A3 (297 × 420 mm)</option><option value="a5">A5 (148 × 210 mm)</option><option value="b5">B5 (176 × 250 mm)</option><option value="exec">Executive (7.25 × 10.5 in)</option><option value="tabloid">Tabloid (11 × 17 in)</option><option value="fit">Match photo</option></select></div>
-        <div class="row"><label>Orientation</label>
-          <div class="seg" id="orient"><button class="on">Auto</button><button>Portrait</button><button>Landscape</button></div></div>
-        <div class="row"><label for="margin">Margin</label><input type="range" id="margin" min="0" max="30" value="10"></div>
-      </aside>
-
-      <section>
-        <div class="pages" id="pages"></div>
-        <div class="bar">
-          <div class="info"><b id="count">0 pages</b></div>
-          <div class="actions">
-            <input type="text" id="fname" value="my-notes" aria-label="File name">
-            <button class="btn ghost" id="share" disabled>Share</button>
-            <button class="btn go" id="dl" disabled>Download PDF</button>
+        <div class="panel list-panel">
+          <h3>Your photos <span class="pill" id="n1">0</span></h3>
+          <p class="hint">Drag a photo to change the order. Tap × to remove it.</p>
+          <ul class="thumbs" id="thumbs"></ul>
+          <div class="empty-s" id="empty1">No photos yet. Add some on the left and they will show up here.</div>
+          <div class="nav">
+            <span></span>
+            <button class="btn go" id="to2" disabled>Continue</button>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 2 : EDIT & ARRANGE ================= -->
+    <section class="view" id="v2" hidden>
+      <div class="app">
+        <aside class="panel">
+          <h3 class="first">Page setup</h3>
+          <div class="row"><label for="per" title="Starts every page with this many photos. You can still drag photos between pages.">Photos per page</label>
+            <select id="per">
+              <option value="1">1 photo</option>
+              <option value="2">2 photos</option>
+              <option value="4">4 photos</option>
+              <option value="6">6 photos</option>
+              <option value="9">9 photos</option>
+            </select></div>
+          <div class="row"><label for="size">Page size</label>
+            <select id="size"><option value="a4">A4 (210 × 297 mm)</option><option value="letter">Letter (8.5 × 11 in)</option><option value="legal">Legal (8.5 × 14 in)</option><option value="long">Long bond (8.5 × 13 in)</option><option value="a3">A3 (297 × 420 mm)</option><option value="a5">A5 (148 × 210 mm)</option><option value="b5">B5 (176 × 250 mm)</option><option value="exec">Executive (7.25 × 10.5 in)</option><option value="tabloid">Tabloid (11 × 17 in)</option><option value="fit">Match photo</option></select></div>
+          <div class="row stack"><label>Orientation</label>
+            <div class="seg" id="orient"><button data-v="auto" class="on">Auto</button><button data-v="port">Portrait</button><button data-v="land">Landscape</button></div></div>
+          <div class="row"><label for="nums">Page numbers</label><input type="checkbox" id="nums" class="switch"></div>
+          <p class="hint tip">Tip: drag a photo to move it. Drag it onto another page (or the + tile) to move it there. Pull the handles to resize. Double-click to crop or edit.</p>
+        </aside>
+
+        <section>
+          <div class="tools" id="tools">
+            <div class="grp">
+              <button class="ib prime" id="ed1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>Edit &amp; crop</button>
+              <button class="ib" id="rep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Replace photo</button>
+              <input id="repl" type="file" accept="image/*" hidden>
+              <input id="file2" type="file" accept="image/*" multiple hidden>
+            </div>
+            <div class="grp">
+              <button class="ib" id="rl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Rotate left</button>
+              <button class="ib" id="rr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Rotate right</button>
+              <button class="ib" id="bw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/></svg>Black &amp; white</button>
+            </div>
+            <div class="grp">
+              <button class="ib" id="rpos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>Reset position</button>
+              <button class="ib" id="rall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Rotate all</button>
+            </div>
+          </div>
+
+          <div class="pages" id="pages"></div>
+
+          <div class="bar">
+            <button class="btn line" id="back1">← Back</button>
+            <div class="info"><b id="count">0 pages</b></div>
+            <button class="btn go" id="to3" disabled>Continue</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= STEP 3 : EXTRACT & DOWNLOAD ================= -->
+    <section class="view" id="v3" hidden>
+      <div class="card exp">
+        <div class="exp-head">
+          <div>
+            <h3>Extract text</h3>
+            <p class="hint">Tick the photos that have text, then extract. Photos you leave unticked are skipped. Only need the PDF? Skip this and use Download below.</p>
+          </div>
+          <div class="row lang"><label for="lang">Language in the photos</label>
+            <select id="lang">
+              <option value="eng">English</option>
+              <option value="fil">Filipino (Tagalog)</option>
+              <option value="spa">Spanish</option>
+              <option value="fra">French</option>
+              <option value="deu">German</option>
+              <option value="ita">Italian</option>
+              <option value="por">Portuguese</option>
+              <option value="chi_sim">Chinese (Simplified)</option>
+              <option value="jpn">Japanese</option>
+              <option value="kor">Korean</option>
+            </select></div>
+        </div>
+        <div class="btnrow">
+          <button class="btn go" id="ocrAll" disabled>Extract text</button>
+          <button class="btn line sm" id="selAll">Select all</button>
+          <button class="btn line sm" id="selNone">Clear</button>
+          <span class="hint" id="readStat"></span>
+        </div>
+        <div class="prog" id="prog" hidden><div class="track"><span id="progBar"></span></div><small id="progTxt"></small></div>
+        <div class="texts" id="texts"></div>
+      </div>
+
+      <div class="bar">
+        <button class="btn line" id="back2">← Back</button>
+        <div class="actions">
+          <input type="text" id="fname" value="my-notes" aria-label="File name">
+          <div class="dd" id="dd">
+            <button class="btn gold" id="ddBtn" aria-haspopup="true" aria-expanded="false" disabled>Download <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+            <div class="menu" id="ddMenu" role="menu" hidden>
+              <div class="mh">Photos</div>
+              <button role="menuitem" data-dl="pdf"><b>PDF</b><small id="pdfSize">Your photos as one PDF</small></button>
+              <div class="mh">Extracted text</div>
+              <button role="menuitem" data-dl="txt"><b>Text file (.txt)</b><small>Extract text first</small></button>
+              <button role="menuitem" data-dl="docx"><b>Word document (.docx)</b><small>Extract text first</small></button>
+              <div class="mh">Both</div>
+              <button role="menuitem" data-dl="both"><b>PDF + text (.zip)</b><small>Extract text first</small></button>
+              <div class="mh">Other</div>
+              <button role="menuitem" data-dl="share"><b>Share PDF…</b><small>Send it to another app</small></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
+
+<footer class="foot">
+  <div class="wrap">Pdfoto runs entirely in your browser, so your photos are never uploaded. (Text extraction downloads its language data once, so it needs internet the first time.)</div>
+</footer>
+
+<!-- ================= PHOTO EDITOR ================= -->
+<div class="modal" id="ed" hidden role="dialog" aria-modal="true" aria-labelledby="edt">
+  <div class="mbox">
+    <header class="mhead">
+      <h3 id="edt">Edit photo</h3>
+      <button class="mx" id="edx" aria-label="Close editor">×</button>
+    </header>
+    <div class="mbody">
+      <div class="stagewrap" id="stagewrap">
+        <div class="stage" id="stage">
+          <canvas id="edc"></canvas>
+          <div class="mask"><div class="dim" id="dim"></div></div>
+          <div class="crop" id="crop">
+            <i data-h="nw"></i><i data-h="n"></i><i data-h="ne"></i><i data-h="e"></i>
+            <i data-h="se"></i><i data-h="s"></i><i data-h="sw"></i><i data-h="w"></i>
+          </div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="sg">
+          <h4>Crop</h4>
+          <p class="hint">Drag on the photo to draw a crop box. Move the box or pull its handles to fine-tune.</p>
+          <button class="btn line sm" id="edcr">Reset crop</button>
+        </div>
+        <div class="sg">
+          <h4>Rotate</h4>
+          <div class="btnrow">
+            <button class="btn line sm" id="edrl">↺ Left</button>
+            <button class="btn line sm" id="edrr">Right ↻</button>
+          </div>
+        </div>
+        <div class="sg">
+          <h4>Look</h4>
+          <div class="seg wrapseg" id="edf">
+            <button data-f="none">Original</button><button data-f="gray">Gray</button><button data-f="enhance">Enhance</button><button data-f="bw">B&amp;W</button>
+          </div>
+          <label class="sl">Brightness<input type="range" id="edb" min="-60" max="60" value="0"></label>
+          <label class="sl">Contrast<input type="range" id="edk" min="-60" max="60" value="0"></label>
+          <p class="hint">“Enhance” whitens the paper and darkens writing. Good for notes.</p>
+        </div>
+        <div class="sg">
+          <h4>Photo</h4>
+          <button class="btn line sm" id="edrep">Replace this photo…</button>
+          <input id="edfile" type="file" accept="image/*" hidden>
+        </div>
+      </div>
+    </div>
+    <footer class="mfoot">
+      <button class="btn line sm" id="edreset">Reset edits</button>
+      <span class="sp"></span>
+      <button class="btn line" id="edcancel">Cancel</button>
+      <button class="btn go" id="edok">Apply changes</button>
+    </footer>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status"></div>
 <script src="script.js"></script>
