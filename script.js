@@ -16,25 +16,42 @@ const HINTS = {
 
 const S = { size: 'a4', orient: 'auto', margin: 0, q: 0.85, dim: 2000, nums: false, per: 1, lang: 'eng' };
 let items = [], sel = null, uid = 0, dragFrom = null, tmr, step = 1, busy = false;
+let blanks = [];      /* pages that exist but hold no photo yet (page numbers, same numbering as it.pg) */
+let fillPg = null;    /* which blank page the file picker is filling (null = just add photos) */
 
 const cur = () => items.find(i => i.id === sel);
 /* ---- Pages are real containers: every photo knows its page (it.pg). Any page can hold any number of photos. ---- */
-const chunks = () => { const o = []; items.forEach(it => (o[it.pg] || (o[it.pg] = [])).push(it)); return o; };
-/* keep photos grouped by page, drop empty pages, number pages 0,1,2… */
+const pageTotal = () => Math.max(-1, ...items.map(i => i.pg), ...blanks) + 1;
+const chunks = () => { const o = Array.from({ length: pageTotal() }, () => []); items.forEach(it => o[it.pg].push(it)); return o; };
+/* keep photos grouped by page, drop pages that became empty (except blank pages the user added), number pages 0,1,2… */
 function normalize() {
   items = items.map((it, i) => [it, i]).sort((a, b) => (a[0].pg - b[0].pg) || (a[1] - b[1])).map(x => x[0]);
-  let last = null, n = -1;
-  items.forEach(it => { if (it.pg !== last) { n++; last = it.pg; } it.pg = n; });
+  if (!items.length) { blanks = []; return; }
+  const used = new Set(items.map(i => i.pg));
+  blanks = [...new Set(blanks)].filter(b => !used.has(b));          /* a blank page that got a photo is no longer blank */
+  const keys = [...new Set([...used, ...blanks])].sort((a, b) => a - b);
+  const map = new Map(keys.map((k, i) => [k, i]));
+  items.forEach(it => { it.pg = map.get(it.pg); });
+  blanks = blanks.map(b => map.get(b));
 }
-const newPageId = () => items.length ? Math.max(...items.map(i => i.pg)) + 1 : 0;
-/* "Photos per page" = start every page with N photos */
-function regroup() { items.forEach((it, i) => { it.pg = Math.floor(i / S.per); it.pos = null; }); }
-/* put a freshly added photo on the last page if it has room, otherwise on a new page */
+const newPageId = () => pageTotal();
+/* "Photos per page" = start every page with N photos (blank pages are cleared, the pages are laid out again) */
+function regroup() { blanks = []; items.forEach((it, i) => { it.pg = Math.floor(i / S.per); it.pos = null; }); }
+/* put a freshly added photo on the last page if it has room (an empty last page counts), otherwise on a new page */
 function assignPage(it, forceNew) {
   const others = items.filter(i => i !== it);
-  if (!others.length) { it.pg = 0; return; }
-  const last = Math.max(...others.map(i => i.pg)), cnt = others.filter(i => i.pg === last).length;
+  const last = Math.max(-1, ...others.map(i => i.pg), ...blanks);
+  if (last < 0) { it.pg = 0; return; }
+  const cnt = others.filter(i => i.pg === last).length;
   it.pg = (!forceNew && cnt < S.per) ? last : last + 1;
+}
+/* add an empty page at the end: no photo needed */
+function addBlankPage() {
+  blanks.push(pageTotal());
+  normalize(); render();
+  toast('Blank page added. Tap “Add photo” on it, or drag a photo onto it.');
+  const all = $$('.sheetp[data-page]'), el = all[all.length - 1];
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 /* move a photo to another page (-1 = a brand-new page) */
 function movePhoto(it, pageIdx) {
@@ -204,6 +221,10 @@ function gridFor(n, land) {
 
 function layoutPage(chunk) {
   const n = chunk.length;
+  if (n === 0) {                                   /* blank page */
+    const [bw0, bh0] = SIZES[S.size === 'fit' ? 'a4' : S.size], l0 = S.orient === 'land';
+    return { pw: l0 ? bh0 : bw0, ph: l0 ? bw0 : bh0, cells: [] };
+  }
   if (n === 1) {
     const it = chunk[0], L = layoutOne(it);
     return { pw: L.pw, ph: L.ph, cells: [applyPos({ it, x: L.x, y: L.y, w: L.w, h: L.h }, L.pw, L.ph, 1)] };
@@ -237,18 +258,22 @@ function pageHTML(chunk, pi) {
       <img src="${c.it.url}" alt="Photo ${items.indexOf(c.it) + 1}" draggable="false">
       <div class="ctl">
         <button class="cb" data-edit="${c.it.id}" aria-label="Edit photo" title="Edit / crop">${PENCIL}</button>
-        <button class="cb" data-dup="${c.it.id}" aria-label="Duplicate photo" title="Duplicate on this page">${DUPICON}</button>
+        <button class="cb" data-dup="${c.it.id}" aria-label="Duplicate photo on a new page" title="Duplicate on a new page">${DUPICON}</button>
         <button class="cb del" data-x="${c.it.id}" aria-label="Remove photo" title="Remove this photo">×</button>
       </div>
       <i class="rz" data-rz="nw"></i><i class="rz" data-rz="ne"></i><i class="rz" data-rz="sw"></i><i class="rz" data-rz="se"></i>
       <i class="rz rzs" data-rz="n"></i><i class="rz rzs" data-rz="s"></i><i class="rz rzs" data-rz="e"></i><i class="rz rzs" data-rz="w"></i>
     </div>`).join('');
+  const blank = chunk.length ? '' : `<div class="blankp">
+      <button type="button" class="cb blankx" data-delpg="${pi}" aria-label="Remove this blank page" title="Remove this page">×</button>
+      <button type="button" class="blankb" data-fill="${pi}">+ Add photo</button>
+      <span>or drag a photo here</span></div>`;
   return `<figure class="pg">
     <div class="sheetp" data-page="${pi}" data-n="${chunk.length}" data-free="${freeOK(chunk.length) ? 1 : 0}" data-pw="${L.pw}" data-ph="${L.ph}" style="aspect-ratio:${L.pw}/${L.ph}">
-      ${cells}
+      ${cells}${blank}
       ${S.nums ? `<span class="num">${pi + 1}</span>` : ''}
     </div>
-    <figcaption>Page ${pi + 1}${chunk.length > 1 ? ` · ${chunk.length} photos` : ''}</figcaption></figure>`;
+    <figcaption>Page ${pi + 1}${chunk.length > 1 ? ` · ${chunk.length} photos` : chunk.length === 0 ? ' · blank' : ''}</figcaption></figure>`;
 }
 
 function render() {
@@ -264,7 +289,7 @@ function render() {
   if (items.length) {
     const L = layoutPage(pg[pg.length - 1]);
     plus = `<figure class="pg addpg"><button type="button" class="sheetp plus" id="addPage" style="aspect-ratio:${L.pw}/${L.ph}" aria-label="Add another page">
-      <span class="pl">+</span><span class="pt">Add page</span></button><figcaption>&nbsp;</figcaption></figure>`;
+      <span class="pl">+</span><span class="pt">Add blank page</span></button><figcaption><button type="button" class="linkb" id="addPagePhotos">or add a page with photos</button></figcaption></figure>`;
   }
   $('#pages').innerHTML = items.length ? pg.map(pageHTML).join('') + plus
     : `<div class="empty"><h3>Your pages will appear here</h3>Add a few photos and you’ll see each page exactly as it will print.</div>`;
@@ -296,23 +321,24 @@ function readImage(file) {
   });
 }
 
-async function load(file, forceNew) {
+async function load(file, forceNew, pageIdx) {
   const img = await readImage(file);
   if (!img) { toast('Couldn’t read “' + file.name + '”. Try JPG, PNG or WebP.'); return false; }
   const it = { id: ++uid, img, name: file.name, rot: 0, filter: 'none', bright: 0, contrast: 0, crop: null, pos: null, ocr: false, text: null, none: false, pick: false };
   process(it);
   it.pg = 0;
   items.push(it);
-  assignPage(it, forceNew);
+  if (pageIdx != null) it.pg = pageIdx; else assignPage(it, forceNew);
   sel = it.id;
   return true;
 }
 
-async function add(files, newPage) {
+async function add(files, newPage, pageIdx) {
   const list = [...files].filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(f.name));
   if (!list.length) { toast('Those files aren’t images.'); return; }
   let ok = 0;
-  for (const f of list) if (await load(f, newPage && ok === 0)) ok++;
+  for (const f of list) if (await load(f, newPage && ok === 0, pageIdx)) ok++;
+  normalize();
   render();
   if (ok) toast(ok + (ok > 1 ? ' photos added' : ' photo added'));
 }
@@ -350,15 +376,19 @@ function select(id) {
   $$('#thumbs li').forEach((li, i) => li.classList.toggle('sel', items[i] && items[i].id === id));
   syncTools();
 }
-/* Duplicate a photo on its own page (only from the icon on the page) */
+/* Duplicate a photo onto its own NEW page, right after the page it came from */
 function dupItem(id) {
   const i = items.find(x => x.id === id); if (!i) return;
   const c = {
     ...i, id: ++uid, crop: i.crop ? { ...i.crop } : null, pick: false, ocr: false, text: null, none: false,
-    pos: i.pos ? { ...i.pos, fx: clamp(i.pos.fx + 0.04, 0, 0.9), fy: clamp(i.pos.fy + 0.04, 0, 0.9) } : null
+    pos: i.pos ? { ...i.pos } : null
   };
+  c.pg = i.pg + 0.5;                       /* between this page and the next; normalize() renumbers */
   items.splice(items.indexOf(i) + 1, 0, c);
-  sel = c.id; render(); toast('Photo duplicated on this page');
+  normalize();
+  sel = c.id; render();
+  toast('Photo duplicated on page ' + (c.pg + 1));
+  const el = document.querySelector('.cell.sel'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* Step 1 thumbnails */
@@ -386,11 +416,16 @@ thumbs.addEventListener('dragend', () => { dragFrom = null; render(); });
 /* Step 2 pages: select, edit, remove, add page */
 const pagesEl = $('#pages');
 pagesEl.addEventListener('click', e => {
+  const dg = e.target.closest('[data-delpg]');
+  if (dg) { blanks = blanks.filter(b => b !== +dg.dataset.delpg); normalize(); render(); toast('Blank page removed'); return; }
+  const fl = e.target.closest('[data-fill]');
+  if (fl) { fillPg = +fl.dataset.fill; $('#file2').click(); return; }
   const x = e.target.closest('[data-x]');
   if (x) { removeItem(+x.dataset.x); return; }
   const dp = e.target.closest('[data-dup]');
   if (dp) { dupItem(+dp.dataset.dup); return; }
-  if (e.target.closest('#addPage')) { $('#file2').click(); return; }
+  if (e.target.closest('#addPage')) { addBlankPage(); return; }
+  if (e.target.closest('#addPagePhotos')) { fillPg = null; $('#file2').click(); return; }
   const ed = e.target.closest('[data-edit]');
   if (ed) { select(+ed.dataset.edit); openEditor(); return; }
 });
@@ -538,7 +573,8 @@ $('#ed1').onclick = () => openEditor();
 $('#rep').onclick = () => $('#repl').click();
 $('#file2').onchange = async e => {
   const f = [...e.target.files]; e.target.value = '';
-  if (f.length) { await add(f, true); const c = document.querySelector('.cell.sel'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  const pg = fillPg; fillPg = null;
+  if (f.length) { await add(f, true, pg); const c = document.querySelector('.cell.sel'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
 };
 $('#repl').onchange = async e => {
   const f = e.target.files[0]; e.target.value = '';
@@ -554,7 +590,7 @@ $('#bw').onclick = () => { const i = cur(); if (i) { i.filter = i.filter === 'gr
 $('#rpos').onclick = () => { const i = cur(); if (i && i.pos) { i.pos = null; render(); toast('Position reset'); } };
 $('#rall').onclick = () => { items.forEach(i => rotateItem(i, 1)); render(); };
 $('#clear').onclick = () => {
-  if (items.length && confirm('Remove all photos?')) { items = []; sel = null; render(); goStep(1); }
+  if (items.length && confirm('Remove all photos?')) { items = []; blanks = []; sel = null; render(); goStep(1); }
 };
 
 /* Page setup */
@@ -817,16 +853,50 @@ async function readBest(it, w, label, n, total) {
     if (k > 0) setProg(`${label}: checking the photo turned ${deg}°…`, n / total);
     const { data } = await w.recognize(await toBlob(deg ? rotCanvas(base, deg) : base));
     const conf = typeof data.confidence === 'number' ? data.confidence : 0;
-    if (!best || conf > best.conf) best = { text: data.text, conf, deg };
+    const r = textFromData(data);
+    if (!best || conf > best.conf) best = { text: r.text, conf, fconf: r.conf, deg };
   }
   return best;
+}
+
+/* ---- Keep ONLY real text. Pictures, logos, borders and shadows make the reader invent stray marks and
+   short junk "words". Every word is checked for confidence and every line for being mostly letters/numbers. ---- */
+const WORD_CONF = 60;   /* raise to be stricter (fewer stray words), lower for faint or handwritten text */
+function isRealLine(t) {
+  const flat = String(t).replace(/\s/g, ''), alnum = (flat.match(/[\p{L}\p{N}]/gu) || []).length;
+  return alnum >= 2 && alnum / flat.length >= 0.6;
+}
+function textFromData(data) {
+  const paras = Array.isArray(data.paragraphs) && data.paragraphs.length ? data.paragraphs
+    : Array.isArray(data.lines) && data.lines.length ? [{ lines: data.lines }] : null;
+  if (!paras) return { text: data.text || '', conf: typeof data.confidence === 'number' ? data.confidence : 0 };
+  const out = []; let sum = 0, cnt = 0;
+  paras.forEach(p => {
+    const lines = [];
+    (p.lines || []).forEach(l => {
+      const words = l.words || [];
+      if (!words.length) {
+        const t = (l.text || '').trim();
+        if (l.confidence >= WORD_CONF && isRealLine(t)) { lines.push(t); sum += l.confidence; cnt++; }
+        return;
+      }
+      const keep = words.filter(w => w.confidence >= WORD_CONF && /[\p{L}\p{N}]/u.test(w.text || ''));
+      if (!keep.length) return;
+      const t = (keep.length === words.length ? (l.text || '') : keep.map(w => w.text).join(' ')).trim();
+      if (!isRealLine(t)) return;
+      lines.push(t);
+      keep.forEach(w => { sum += w.confidence; cnt++; });
+    });
+    if (lines.length) out.push(lines.join('\n'));
+  });
+  return { text: out.join('\n\n'), conf: cnt ? sum / cnt : 0 };
 }
 
 /* Throw away OCR noise: a photo with no real text should come back as "no text", not as junk.
    Returns the cleaned text, or null when there is no real text. */
 function cleanOCR(text, conf) {
   const lines = String(text || '').split(/\r?\n/).map(l => l.trim())
-    .filter(l => l === '' || /[\p{L}\p{N}]/u.test(l));
+    .filter(l => l === '' || isRealLine(l));
   const res = lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   const alnum = (res.match(/[\p{L}\p{N}]/gu) || []).length;
   const all = res.replace(/\s/g, '').length;
@@ -874,8 +944,8 @@ async function runOCR(list) {
       const best = await readBest(it, w, label, n, list.length);
       it.reading = false;
       if (items.includes(it) && it.url === url) {
-        const t = cleanOCR(best.text, best.conf);
-        it.ocr = true; it.none = t === null; it.text = t || ''; it.conf = best.conf; it.pick = false;
+        const t = cleanOCR(best.text, best.fconf);
+        it.ocr = true; it.none = t === null; it.text = t || ''; it.conf = best.fconf; it.pick = false;
       }
       renderText();
     }
