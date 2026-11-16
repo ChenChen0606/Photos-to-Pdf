@@ -63,10 +63,6 @@ textarea {
   padding: 0 20px;
 }
 
-
-/* ==========================================================================
-   2. HERO
-   ========================================================================== */
 .hero {
   padding: 26px 0 70px;
   overflow: hidden;
@@ -141,7 +137,6 @@ nav {
   color: var(--muted);
 }
 
-/* ---------- circle composition ---------- */
 .art {
   position: relative;
   aspect-ratio: 1;
@@ -199,7 +194,6 @@ nav {
   background: var(--mar-d);
 }
 
-/* ---------- floating sheets ---------- */
 .sheets {
   position: absolute;
   inset: 0;
@@ -279,7 +273,6 @@ nav {
   }
 }
 
-/* ---------- how-it-works steps ---------- */
 .steps {
   list-style: none;
   margin: 56px 0 0;
@@ -346,10 +339,6 @@ nav {
   font-size: 15px;
 }
 
-
-/* ==========================================================================
-   3. BUTTONS
-   ========================================================================== */
 .btn {
   border: 0;
   cursor: pointer;
@@ -421,10 +410,6 @@ nav {
   cursor: not-allowed;
 }
 
-
-/* ==========================================================================
-   4. APP SHELL
-   ========================================================================== */
 .app-sec {
   background: var(--paper);
   border-top: 2px solid var(--ink);
@@ -470,7 +455,6 @@ nav {
   color: var(--muted);
 }
 
-/* ---------- stepper ---------- */
 .stepper {
   list-style: none;
   margin: 0 0 26px;
@@ -528,7 +512,6 @@ nav {
   border-color: var(--mar);
 }
 
-/* ---------- view transition ---------- */
 .view.in {
   animation: rise .35s ease both;
 }
@@ -551,10 +534,6 @@ nav {
   }
 }
 
-
-/* ==========================================================================
-   5. PANELS & SHARED COMPONENTS
-   ========================================================================== */
 .panel,
 .card {
   background: var(--ivory);
@@ -599,10 +578,6 @@ nav {
   vertical-align: middle;
 }
 
-
-/* ==========================================================================
-   6. STEP 1 – UPLOAD
-   ========================================================================== */
 .up {
   display: grid;
   grid-template-columns: 370px 1fr;
@@ -610,7 +585,6 @@ nav {
   align-items: start;
 }
 
-/* ---------- drop zone ---------- */
 .drop {
   width: min(100%, 290px);
   aspect-ratio: 1;
@@ -655,7 +629,6 @@ nav {
   margin-top: 4px;
 }
 
-/* ---------- uploaded list / thumbnails ---------- */
 .list-panel {
   min-height: 380px;
   display: flex;
@@ -756,10 +729,6 @@ nav {
   padding-top: 22px;
 }
 
-
-/* ==========================================================================
-   7. STEP 2 – LAYOUT / PREVIEW
-   ========================================================================== */
 .app {
   display: grid;
   grid-template-columns: 340px 1fr;
@@ -767,7 +736,6 @@ nav {
   align-items: start;
 }
 
-/* ---------- settings rows & controls ---------- */
 .row {
   display: flex;
   justify-content: space-between;
@@ -842,7 +810,6 @@ input[type=range] {
   color: #fff;
 }
 
-/* ---------- toolbar ---------- */
 .tools {
   display: flex;
   flex-wrap: wrap;
@@ -905,7 +872,6 @@ input[type=range] {
   cursor: not-allowed;
 }
 
-/* ---------- preview stage (white) ---------- */
 .pages {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 300px));
@@ -956,7 +922,6 @@ input[type=range] {
   box-shadow: 0 18px 30px -14px rgba(27, 20, 22, .5);
 }
 
-/* ---------- photo cells on a page ---------- */
 .cell {
   position: absolute;
   cursor: grab;
@@ -1059,7 +1024,6 @@ input[type=range] {
   margin-bottom: 6px;
 }
 
-/* ---------- bottom bar (white) ---------- */
 .bar {
   position: sticky;
   bottom: 12px;
@@ -1093,10 +1057,6 @@ input[type=range] {
   width: 170px;
 }
 
-
-/* ==========================================================================
-   8. STEP 3 – EXPORT
-   ========================================================================== */
 .card {
   background: #fff;
 }
@@ -1147,7 +1107,6 @@ input[type=range] {
   margin-top: 18px;
 }
 
-/* ---------- progress ---------- */
 .prog {
   margin: 4px 0 14px;
 }
@@ -1175,7 +1134,6 @@ input[type=range] {
   margin-top: 6px;
 }
 
-/* ---------- extracted text blocks ---------- */
 .texts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -1239,10 +1197,6 @@ input[type=range] {
   margin: 8px 0 4px;
 }
 
-
-/* ==========================================================================
-   9. EDITOR MODAL
-   ========================================================================== */
 .modal {
   position: fixed;
   inset: 0;
@@ -1307,7 +1261,6 @@ input[type=range] {
   flex: 1;
 }
 
-/* ---------- editing stage ---------- */
 .stagewrap {
   display: grid;
   place-items: center;
@@ -1347,7 +1300,6 @@ input[type=range] {
   box-shadow: 0 0 0 9999px rgba(27, 20, 22, .55);
 }
 
-/* ---------- crop box ---------- */
 .crop {
   position: absolute;
   border: 2px solid #fff;
@@ -1428,7 +1380,6 @@ input[type=range] {
   cursor: ew-resize;
 }
 
-/* ---------- side panel ---------- */
 .side {
   padding: 18px 22px;
   overflow: auto;
@@ -1486,10 +1437,6 @@ input[type=range] {
   flex: 1;
 }
 
-
-/* ==========================================================================
-   10. FOOTER & TOAST
-   ========================================================================== */
 .foot {
   padding: 26px 0 40px;
   color: var(--muted);
@@ -1516,10 +1463,6 @@ input[type=range] {
   display: block;
 }
 
-
-/* ==========================================================================
-   11. RESPONSIVE
-   ========================================================================== */
 @media (max-width: 1000px) {
 
   .up,
@@ -1605,10 +1548,6 @@ input[type=range] {
   }
 }
 
-
-/* ==========================================================================
-   12. ADDITIONS: MOVING & RESIZING PHOTOS ON THE PAGE
-   ========================================================================== */
 .cell.sel {
   touch-action: none;
   z-index: 3;
@@ -1682,19 +1621,11 @@ input[type=range] {
   grid-template-columns: repeat(auto-fill, minmax(340px, 440px));
 }
 
-
-/* ==========================================================================
-   13. ADDITIONS: STEP 1 HINT
-   ========================================================================== */
 .hint.center {
   text-align: center;
   margin-top: 14px;
 }
 
-
-/* ==========================================================================
-   14. ADDITIONS: STEP 3 EXTRACT CARDS
-   ========================================================================== */
 .exp {
   margin-bottom: 6px;
 }
@@ -1737,7 +1668,6 @@ input[type=range] {
   flex: 1;
 }
 
-/* ---------- badges ---------- */
 .bd {
   font-size: 12.5px;
   font-weight: 700;
@@ -1775,10 +1705,6 @@ input[type=range] {
   margin: 10px 2px 0;
 }
 
-
-/* ==========================================================================
-   15. ADDITIONS: DOWNLOAD DROPDOWN
-   ========================================================================== */
 .dd {
   position: relative;
 }
@@ -1844,10 +1770,6 @@ input[type=range] {
   cursor: not-allowed;
 }
 
-
-/* ==========================================================================
-   16. ADDITIONS: MIDDLE (STRETCH) HANDLES
-   ========================================================================== */
 .rz.rzs {
   background: var(--mar);
   border-color: #fff;
@@ -1897,10 +1819,6 @@ input[type=range] {
   z-index: 6;
 }
 
-
-/* ==========================================================================
-   17. ADDITIONS: ADD PAGE TILE
-   ========================================================================== */
 .addpg {
   display: block;
 }
@@ -1958,10 +1876,6 @@ input[type=range] {
   margin: 8px 2px 0;
 }
 
-
-/* ==========================================================================
-   18. ADDITIONS: DRAGGING A PHOTO TO ANOTHER PAGE
-   ========================================================================== */
 .cell.lift {
   opacity: .35;
 }
@@ -1997,9 +1911,6 @@ input[type=range] {
   background: var(--blush);
 }
 
-/* ==========================================================================
-   19. ADDITIONS: BLANK PAGES
-   ========================================================================== */
 .sheetp .blankp {
   position: absolute;
   inset: 0;
@@ -2048,7 +1959,6 @@ input[type=range] {
   cursor: pointer;
 }
 
-/* ---------- larger extract text view ---------- */
 .texts {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
   gap: 18px;
@@ -2069,4 +1979,150 @@ input[type=range] {
 .txh img {
   width: 52px;
   height: 52px;
+}
+
+.wrap { max-width: none; padding: 0 2.5vw; }
+.logo { color: inherit; text-decoration: none; }
+
+body:not(.view-app) .app-sec { display: none; }
+body.view-app .hero { display: none; }
+body:not(.view-app) { height: 100vh; height: 100dvh; overflow: hidden; }
+
+.hero { height: 100vh; height: 100dvh; padding: 2.4vh 0 0; display: flex; }
+.hero > .wrap { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.hero nav { margin-bottom: 1.5vh; flex: none; }
+.hero-grid { flex: 1; min-height: 0; grid-template-columns: 1.1fr .9fr; grid-template-rows: minmax(0, 1fr); gap: 3vw; }
+.hero-text { min-width: 0; }
+.hero h1 { font-size: clamp(36px, min(5.6vw, 9.4vh), 112px); line-height: 1.02; max-width: 11em; }
+.lead { font-size: clamp(15px, min(1.45vw, 2.5vh), 22px); max-width: 34em; margin: 2.4vh 0 3.4vh; }
+.hero .btn.solid { padding: clamp(12px, 2vh, 20px) clamp(26px, 2.6vw, 44px); font-size: clamp(15px, 2vh, 19px); }
+.art { height: 100%; width: auto; max-width: none; max-height: 100%; justify-self: center; align-self: center; }
+.steps { flex: none; margin: 0; padding: 2vh 0 3vh; gap: 2.5vw; }
+.steps li { padding-top: clamp(50px, 8.4vh, 76px); }
+.steps li:before { width: clamp(40px, 6.4vh, 58px); height: clamp(40px, 6.4vh, 58px); font-size: clamp(16px, 2.4vh, 22px); }
+.steps li:after { top: clamp(19px, 3.1vh, 28px); left: clamp(52px, 8vh, 70px); }
+.steps b { font-size: clamp(17px, 2.6vh, 24px); }
+.steps span { font-size: clamp(12px, 1.9vh, 16px); display: block; line-height: 1.45; }
+
+.app-sec { min-height: 100vh; border-top: 0; padding: 2.4vh 0 5vh; }
+.app-sec:before { display: none; }
+.appnav { margin-bottom: 2vh; }
+.app-head { margin-bottom: 18px; }
+.up { grid-template-columns: minmax(360px, 30vw) 1fr; gap: 2vw; }
+.drop { width: min(100%, 360px); }
+.list-panel { min-height: 62vh; }
+.thumbs { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 22px 18px; }
+.app { grid-template-columns: minmax(330px, 22vw) 1fr; gap: 2vw; }
+.panel, .card { padding: clamp(22px, 2vw, 36px); }
+.pages { grid-template-columns: repeat(auto-fill, minmax(340px, 500px)); gap: 36px 32px; padding: 2.2vw; min-height: 62vh; }
+.pages.multi { grid-template-columns: repeat(auto-fill, minmax(440px, 640px)); }
+.texts { grid-template-columns: repeat(auto-fill, minmax(min(100%, 640px), 1fr)); }
+.tx textarea { min-height: 46vh; }
+.mbox { width: min(1560px, 100%); }
+.mbody { grid-template-columns: 1fr 340px; }
+.stagewrap { height: min(74vh, 840px); }
+.side { max-height: min(74vh, 840px); }
+
+@media (max-width: 1000px) { .up, .app { grid-template-columns: 1fr; } }
+@media (max-width: 940px) {
+  .hero-grid { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; gap: 2vh; }
+  .art { order: -1; height: 24vh; }
+  .hero h1 { font-size: clamp(30px, 8vw, 56px); max-width: none; }
+  .lead { margin: 1.4vh 0 2vh; }
+  .hero nav { margin-bottom: 1vh; }
+  .mbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .steps li { padding: 0 0 0 64px; min-height: 0; }
+  .steps { gap: 1vh; padding: 1vh 0 2vh; }
+  .steps span { display: none; }
+  .steps li:before { top: 0; width: 40px; height: 40px; }
+  .pages, .pages.multi { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1001px) {
+  body.step2.view-app { height: 100vh; height: 100dvh; overflow: hidden; }
+  body.step2 .app-sec { height: 100vh; height: 100dvh; min-height: 0; padding: 1.2vh 0 1.4vh; display: flex; flex-direction: column; }
+  body.step2 .app-sec > .wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+  body.step2 .appnav { margin: 0 0 .4vh; }
+  body.step2 .appnav .logo { font-size: 22px; gap: 9px; }
+  body.step2 .appnav .mark { width: 32px; height: 20px; }
+  body.step2 .appnav .mark i { width: 20px; height: 20px; }
+  body.step2 .appnav .mark i:last-child { left: 11px; }
+  body.step2 .app-head { margin-bottom: .8vh; align-items: center; }
+  body.step2 .app-head h2 { font-size: clamp(24px, 3.6vh, 36px); }
+  body.step2 .app-head p { margin: 2px 0 0; font-size: 13px; }
+  body.step2 .app-head .btn { padding: 8px 18px; font-size: 14px; }
+  body.step2 .stepper { margin: 0 0 1vh; gap: 8px; }
+  body.step2 .stepper button { padding: 3px 16px 3px 3px; font-size: 14px; }
+  body.step2 .stepper button span { width: 28px; height: 28px; font-size: 14px; }
+
+  body.step2 #v2 { flex: 1; min-height: 0; display: flex; }
+  body.step2 #v2 .app { flex: 1; min-height: 0; width: 100%; grid-template-columns: clamp(220px, 15vw, 280px) 1fr; gap: 1.2vw; align-items: stretch; }
+
+  body.step2 #v2 aside.panel { padding: 16px 16px; border-radius: 26px; overflow: auto; min-height: 0; }
+  body.step2 #v2 aside h3 { font-size: 18px; margin-bottom: 4px; }
+  body.step2 #v2 aside .row { margin: 10px 0; font-size: 13px; }
+  body.step2 #v2 aside .row.stack { gap: 6px; }
+  body.step2 #v2 aside select { padding: 6px 10px; font-size: 13px; max-width: 150px; }
+  body.step2 #v2 aside .seg button { padding: 4px 6px; font-size: 12.5px; }
+  body.step2 #v2 aside .switch { width: 18px; height: 18px; }
+  body.step2 #v2 aside .hint.tip { font-size: 12px; line-height: 1.45; margin-top: 12px; padding-top: 10px; }
+
+  body.step2 #v2 .app > section { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  body.step2 .tools { flex: none; margin-bottom: 8px; gap: 8px; }
+  body.step2 .ib { padding: 7px 12px; font-size: 13px; }
+  body.step2 .ib svg { width: 16px; height: 16px; }
+
+  body.step2 #pages, body.step2 #pages.multi {
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; flex-wrap: wrap; gap: 20px; align-content: center; justify-content: center;
+    padding: 14px; border-radius: 28px;
+  }
+  body.step2 #pages .pg { flex: none; width: var(--pw, 200px); }
+  body.step2 #pages .pg figcaption { margin-top: 6px; line-height: 18px; font-size: 12px; }
+  body.step2 #pages .empty { width: 100%; padding: 20px; }
+  body.step2 #pages .cb, body.step2 .pages.multi .cb { width: 22px; height: 22px; font-size: 14px; }
+  body.step2 #pages .sheetp.plus .pl { font-size: calc(var(--pw, 200px) * .22); }
+  body.step2 #pages .sheetp.plus .pt { font-size: 13px; }
+
+  body.step2 .bar { position: static; flex: none; margin-top: 8px; padding: 6px 8px; }
+  body.step2 .bar .btn { padding: 9px 22px; }
+}
+
+@media (min-width: 1001px) {
+
+  body.step2 .app-sec > .wrap { width: 100%; margin: 0; padding: 0 1vw; }
+
+  body.step2 #v2 .app { grid-template-columns: clamp(200px, 13vw, 240px) 1fr; gap: 1vw; align-items: start; }
+  body.step2 #v2 .app > aside.panel { align-self: start; height: auto; max-height: 100%; }
+  body.step2 #v2 .app > section { align-self: stretch; height: 100%; }
+  body.step2 #pages, body.step2 #pages.multi { padding: 12px; }
+
+  body.step2 .app-head .btn { padding: 6px 16px; font-size: 13px; }
+  body.step2 .ib { padding: 6px 11px; font-size: 12.5px; }
+  body.step2 .ib svg { width: 15px; height: 15px; }
+  body.step2 .bar .btn { padding: 7px 20px; font-size: 14px; }
+}
+
+@media (min-width: 1001px) {
+
+  body.step2 .app-sec { padding-top: clamp(12px, 2.2vh, 22px); }
+
+  body.step2 .tools { margin-top: 10px; }
+  body.step2 #v2 .app > aside.panel { margin-top: 10px; }
+
+  body.step2 #v2 .app { grid-template-columns: clamp(225px, 14vw, 255px) 1fr; }
+  body.step2 #v2 aside .seg { padding: 2px; }
+  body.step2 #v2 aside .seg button { flex: 1; min-width: 0; padding: 5px 4px; font-size: 12px; white-space: nowrap; }
+  body.step2 #v2 aside select { max-width: 138px; padding: 6px 8px; text-overflow: ellipsis; }
+}
+
+@media (min-width: 1001px) {
+  body.step2 #v2 aside.panel { container-type: inline-size; }
+  body.step2 #v2 aside .seg button { font-size: clamp(9px, 4.3cqw, 12px); padding: 5px 2px; letter-spacing: 0; }
+  body.step2 #v2 aside .row { font-size: clamp(11px, 5.6cqw, 13px); }
+  body.step2 #v2 aside select { font-size: clamp(11px, 5.6cqw, 13px); }
+  body.step2 #v2 aside .hint.tip { font-size: clamp(10.5px, 5.2cqw, 12px); }
 }
