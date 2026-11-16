@@ -615,6 +615,7 @@ $('#orient').onclick = e => {
 function goStep(n) {
   if (n > 1 && !items.length) { toast('Add at least one photo first.'); return; }
   step = n;
+  document.body.classList.toggle('step2', n === 2);
   $$('.view').forEach((v, i) => v.hidden = (i + 1) !== n);
   $$('#stepper button').forEach(b => {
     const k = +b.dataset.go;
@@ -1174,3 +1175,52 @@ $('#ddMenu').addEventListener('click', async e => {
 });
 
 render();
+
+/* =========================================================
+   Two screens: landing (#) and the app (#app)
+   ========================================================= */
+function route() {
+  document.body.classList.toggle('view-app', location.hash === '#app');
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+route();
+
+/* =========================================================
+   Step 2: size the pages so every page fits on screen (no scrolling)
+   ========================================================= */
+function fitPages() {
+  const box = $('#pages');
+  if (!box || !box.clientWidth) return;
+  const tiles = [...box.querySelectorAll('.pg')];
+  if (!tiles.length) return;
+  const cs = getComputedStyle(box), padX = parseFloat(cs.paddingLeft) || 0, padY = parseFloat(cs.paddingTop) || 0;
+  const GAP = 20, CAP = 30;
+  const aw = box.clientWidth - 2 * padX, ah = box.clientHeight - 2 * padY;
+  let minAr = 9;
+  tiles.forEach(t => {
+    const s = t.querySelector('.sheetp'), m = (s.style.aspectRatio || '').split('/');
+    minAr = Math.min(minAr, (parseFloat(m[0]) / parseFloat(m[1])) || .7);
+  });
+  const n = tiles.length; let best = 70;
+  for (let c = 1; c <= n; c++) {
+    const r = Math.ceil(n / c);
+    const w1 = (aw - (c - 1) * GAP) / c, w2 = ((ah - (r - 1) * GAP) / r - CAP) * minAr;
+    best = Math.max(best, Math.min(w1, w2));
+  }
+  let w = Math.floor(best) - 1;
+  box.style.setProperty('--pw', w + 'px');
+  /* safety for zoom / rounding: shrink until every page really sits inside the box */
+  const fits = () => {
+    const br = box.getBoundingClientRect();
+    return tiles.every(t => { const r = t.getBoundingClientRect();
+      return r.top >= br.top - .5 && r.bottom <= br.bottom + .5 && r.left >= br.left - .5 && r.right <= br.right + .5; });
+  };
+  for (let k = 0; k < 30 && w > 70 && !fits(); k++) { w = Math.floor(w * .97); box.style.setProperty('--pw', w + 'px'); }
+}
+{
+  const pb = $('#pages');
+  new ResizeObserver(fitPages).observe(pb);
+  new MutationObserver(fitPages).observe(pb, { childList: true });
+  window.addEventListener('resize', fitPages);
+}
